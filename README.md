@@ -90,20 +90,24 @@ The third objective is to practice our usage of **Docker**. All the components o
 
 ## Step 5: Dynamic reverse proxy configuration
 
-### Webcasts
+Several Webcasts are available ([5a](https://www.youtube.com/watch?v=iGl3Y27AewU) [5b](https://www.youtube.com/watch?v=lVWLdB3y-4I) [5c](https://www.youtube.com/watch?v=MQj-FzD-0mE) [5d](https://www.youtube.com/watch?v=B_JpYtxoO_E) [5e](https://www.youtube.com/watch?v=dz6GLoGou9k)) which show a methods to do this with Apache.
 
-* [Labo HTTP (5a): configuration dynamique du reverse proxy](https://www.youtube.com/watch?v=iGl3Y27AewU)
-* [Labo HTTP (5b): configuration dynamique du reverse proxy](https://www.youtube.com/watch?v=lVWLdB3y-4I)
-* [Labo HTTP (5c): configuration dynamique du reverse proxy](https://www.youtube.com/watch?v=MQj-FzD-0mE)
-* [Labo HTTP (5d): configuration dynamique du reverse proxy](https://www.youtube.com/watch?v=B_JpYtxoO_E)
-* [Labo HTTP (5e): configuration dynamique du reverse proxy](https://www.youtube.com/watch?v=dz6GLoGou9k)
+However, we do **NOT** recommend anymore to follow this method but instead to use a more modern approach, based on [Traefik](https://traefik.io/traefik/). Traefik is a reverse proxy which interfaces directly with Docker to obtain the list of active backend servers. This means that it can dynamically adjust to the number of running server.
+
+To use Traefik you have to convert your docker run scripts to [Docker Compose](https://docs.docker.com/compose/). Docker Compose manages several "services" (i.e., running containers) at once.
+
+The steps to follow for this section are thus:
+
+* create a docker-compose file which manages all your services (the static and dynamic Web servers), using your docker images.
+* add a new service "reverse_proxy" using the Traefik docker image
+* To configure the Traefik service and the communication between the Web servers and Traefik:
+  * read the [Traefik Quick Start](https://doc.traefik.io/traefik/getting-started/quick-start/) documentation,
+  * read the [Traefik & Docker](https://doc.traefik.io/traefik/routing/providers/docker/) documentation, in particular for the dynamic Web server. 
 
 ### Acceptance criteria
 
 * You have a GitHub repo with everything needed to build the various images.
-* You have found a way to replace the static configuration of the reverse proxy (hard-coded IP adresses) with a dynamic configuration.
-* You may use the approach presented in the webcast (environment variables and PHP script executed when the reverse proxy container is started), or you may use another approach. The requirement is that you should not have to rebuild the reverse proxy Docker image when the IP addresses of the servers change.
-* You are able to do an end-to-end demo with a well-prepared scenario. Make sure that you can demonstrate that everything works fine when the IP addresses change!
+* You are able to do an end-to-end demo with a well-prepared scenario. Make sure that you can demonstrate that everything works when you restart your infrastructure with a different number of servers.
 * You are able to explain how you have implemented the solution and walk us through the configuration and the code.
 * You have **documented** your configuration in your report.
 
@@ -111,13 +115,14 @@ The third objective is to practice our usage of **Docker**. All the components o
 
 ### Load balancing: multiple server nodes (0.5pt)
 
-* You extend the reverse proxy configuration to support **load balancing**. 
+* You extend the reverse proxy configuration to support **load balancing**. You get this for free if you use Traefik.
 * You show that you can have **multiple static server nodes** and **multiple dynamic server nodes**. 
 * You prove that the **load balancer** can distribute HTTP requests between these nodes.
 * You have **documented** your configuration and your validation procedure in your report.
 
 ### Load balancing: round-robin vs sticky sessions (0.5 pt)
 
+* You can do this with [Traefik](https://doc.traefik.io/traefik/routing/providers/docker/#services)
 * You do a setup to demonstrate the notion of sticky session.
 * You prove that your load balancer can distribute HTTP requests in a round-robin fashion to the dynamic server nodes (because there is no state).
 * You prove that your load balancer can handle sticky sessions when forwarding HTTP requests to the static server nodes.
@@ -126,8 +131,7 @@ The third objective is to practice our usage of **Docker**. All the components o
 ### Dynamic cluster management (0.5 pt)
 
 * You develop a solution, where the server nodes (static and dynamic) can appear or disappear at any time.
-* You show that the load balancer is dynamically updated to reflect the state of the cluster.
-* You describe your approach (are you implementing a discovery protocol based on UDP multicast? are you using a tool such as serf?)
+* You show that the load balancer is dynamically updated to reflect the state of the cluster (you get this for free with Traefik).
 * You have documented your configuration and your validation procedure in your report.
 
 ### Management UI (0.5 pt)
