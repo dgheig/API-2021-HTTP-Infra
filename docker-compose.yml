@@ -1,0 +1,21 @@
+version: '3.5'
+services:
+
+  apache2:
+    build:
+      context: .  # Required, the folder we want to launch the command from if we did it using docker
+      dockerfile: ./apache2.Dockerfile
+      labels:
+      - "RES=HTTP"
+    image: res-http-apache2-static
+    ports:
+      - "8000:80"
+    networks:
+      default:
+      http:
+    labels:
+    - "RES=HTTP"
+networks:
+  http:
+    driver: "bridge"
+    name: http
