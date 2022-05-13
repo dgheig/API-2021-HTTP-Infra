@@ -30,6 +30,13 @@ Nb: Provide a way to see the result of each step individually (?)
 
 ### Step 1: Static HTTP server with apache httpd
 
+#### Goals
+
+* Create a github repository
+* Create a apache2 docker image with custom content
+
+
+
 [startbootstrap.com](https://startbootstrap.com/): some bootstrap templates.
 
 The template we used: [Freelancer](https://startbootstrap.com/theme/freelancer) [(download)](https://github.com/startbootstrap/startbootstrap-freelancer/archive/gh-pages.zip)
@@ -51,6 +58,11 @@ docker-compose up # add -d option to run as a daemon (i.e in the background)
 
 
 ### Step 2: Dynamic HTTP server with express.js
+
+#### Goals
+
+* Write a dynamic HTTP app (express.js)
+* Query the server (postman)
 
 
 
