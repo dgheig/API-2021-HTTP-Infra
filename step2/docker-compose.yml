@@ -1,0 +1,30 @@
+version: '3.5'
+services:
+
+  flask:
+    build:
+      context: ./flask  # Required, the folder we want to launch the command from if we did it using docker
+      dockerfile: ./flask.Dockerfile
+      labels:
+      - "RES=HTTP"
+    image: res-flask-app
+    ports:
+      - "8301:5000"
+    networks:
+      default:
+    labels:
+    - "RES=HTTP"
+
+  express:
+    build:
+      context: ./express  # Required, the folder we want to launch the command from if we did it using docker
+      dockerfile: ./express.Dockerfile
+      labels:
+      - "RES=HTTP"
+    image: res-express-app
+    ports:
+      - "8302:8080"
+    networks:
+      default:
+    labels:
+    - "RES=HTTP"
