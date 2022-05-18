@@ -1,0 +1,62 @@
+version: "3.7"
+services:
+  apache:
+    image: res-apache2-reverse-proxy
+    build: .
+    ports:
+      - "80:80"
+    networks:
+      internal:
+    volumes:
+      - ./apache_cache:/var/cache/apache/
+
+  static-apache2:
+    image: res-http-apache2-static
+    networks:
+      internal:
+  crow-app:
+    image: res-crow-app
+    networks:
+      internal:
+  flask-app:
+    image: res-flask-app
+    networks:
+      internal:
+  express-app:
+    image: res-express-app
+    networks:
+      internal:
+
+  wordpress-db:
+    image: mysql:5.7
+    volumes:
+      - db_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: wordpress
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+    networks:
+      internal:
+  wordpress:
+    depends_on:
+      - wordpress-db
+    image: wordpress:latest
+    volumes:
+      - wordpress_data:/var/www/html
+    environment:
+      WORDPRESS_DB_HOST: wordpress-db
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress
+    networks:
+      internal:
+        aliases:
+        - wordpresswp-admin
+
+volumes:
+  db_data: {}
+  wordpress_data: {}
+
+networks:
+  internal:

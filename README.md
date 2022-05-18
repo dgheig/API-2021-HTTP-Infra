@@ -66,7 +66,38 @@ docker-compose up # add -d option to run as a daemon (i.e in the background)
 
 
 
+We made 3 versions:
+
+* ExpressJs
+* [Flask](https://flask.palletsprojects.com/en/2.1.x/)
+* [CrowCpp](https://github.com/CrowCpp/Crow)
+
+Nb: The CrowCpp server build is leveraged using a docker image with all the required build dependencies (see `step2/cpp/build.sh` script)
+
+
+
 ### Step 3: Reverse proxy with apache (static configuration)
+
+#### Goals
+
+
+
+#### [Virtualhost](https://httpd.apache.org/docs/2.4/en/vhosts/examples.html)
+
+> Your server has multiple hostnames that resolve to a single address, and you want to respond differently for `www.example.com` and `www.example.org`.
+
+This is especially useful when you want to [reverse-proxy](https://httpd.apache.org/docs/2.4/en/vhosts/examples.html#proxy) multiple hosts according to their domain or the port used.
+
+```apache
+<VirtualHost *:*>
+    ProxyPreserveHost On
+    ProxyPass        "/" "http://192.168.111.2/"
+    ProxyPassReverse "/" "http://192.168.111.2/"
+    ServerName hostname.example.com
+</VirtualHost>
+```
+
+see [Reverse Proxy Guide](https://httpd.apache.org/docs/2.4/en/howto/reverse_proxy.html)
 
 
 
