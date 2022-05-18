@@ -28,3 +28,17 @@ services:
       default:
     labels:
     - "RES=HTTP"
+
+  crow:
+    build:
+      context: ./cpp  # Required, the folder we want to launch the command from if we did it using docker
+      dockerfile: ./crow.Dockerfile
+      labels:
+      - "RES=HTTP"
+    image: res-crow-app
+    ports:
+      - "8303:18080"
+    networks:
+      default:
+    labels:
+    - "RES=HTTP"
