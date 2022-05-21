@@ -16,6 +16,19 @@ services:
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
 
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - portainer-data:/data
+    ports:
+      - 9000:9000
+
   static:
     build:
       context: ./apache
@@ -67,3 +80,6 @@ services:
     - "traefik.http.services.express-service.loadbalancer.server.port=8080"
     # https://www.reddit.com/r/Traefik/comments/lss1ie/cannot_make_stripprefix_work_help/
     - "traefik.http.routers.express.middlewares=students-stripprefix"
+
+volumes:
+  portainer-data:

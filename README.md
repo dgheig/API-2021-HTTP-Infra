@@ -95,11 +95,25 @@ see [Reverse Proxy Guide](https://httpd.apache.org/docs/2.4/en/howto/reverse_pro
 
 ### Step 4: AJAX requests with JQuery
 
+#### Goals
 
+* Use Jquery to make an AJAX request
+
+
+
+* Jquery is not part of bootstrap anymore. We had to import it from a CDN.
+
+  ```html
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  ```
+
+  
 
 ### Step 5: Dynamic reverse proxy configuration
 
+#### Goals
 
+* Use traefik for dynamic reverse proxy.
 
 
 
@@ -119,4 +133,27 @@ see [Reverse Proxy Guide](https://httpd.apache.org/docs/2.4/en/howto/reverse_pro
 
 ### Management UI (0.5 pt)
 
-We will use [Portainer-ce](https://docs.portainer.io/v/ce-2.9/)
+We will use [Portainer-ce](https://docs.portainer.io/v/ce-2.9/).
+
+```yaml
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - portainer-data:/data
+    ports:
+      - 9000:9000
+```
+
+Nb: We do not need special routing from traefik.
+
+* The UI is available at `localhost:9000`.
+
+* We need to configure a local docker by using the socket (available inside the container through a mount)
+
+  ![add_local_docker](img/add_local_docker.png)
