@@ -1,0 +1,40 @@
+version: "3.7"
+services:
+  apache:
+    image: res-apache2-reverse-proxy
+    ports:
+      - "80:80"
+    networks:
+      default:
+      internal:
+    volumes:
+      - ./apache_cache:/var/cache/apache/
+
+  static-apache2:
+    build:
+      context: .  # Required, the folder we want to launch the command from if we did it using docker
+      dockerfile: ./apache2.Dockerfile
+      labels:
+      - "RES=HTTP"
+    image: res-http-apache2-static:step4
+    networks:
+      internal:
+  crow-app:
+    image: res-crow-app
+    networks:
+      internal:
+  flask-app:
+    image: res-flask-app
+    networks:
+      internal:
+  express-app:
+    image: res-express-app
+    networks:
+      internal:
+        aliases:
+        - students-api
+
+networks:
+  default:
+  internal:
+    internal: true
