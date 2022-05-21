@@ -82,22 +82,14 @@ Nb: The CrowCpp server build is leveraged using a docker image with all the requ
 
 
 
-#### [Virtualhost](https://httpd.apache.org/docs/2.4/en/vhosts/examples.html)
-
-> Your server has multiple hostnames that resolve to a single address, and you want to respond differently for `www.example.com` and `www.example.org`.
-
-This is especially useful when you want to [reverse-proxy](https://httpd.apache.org/docs/2.4/en/vhosts/examples.html#proxy) multiple hosts according to their domain or the port used.
-
-```apache
-<VirtualHost *:*>
-    ProxyPreserveHost On
-    ProxyPass        "/" "http://192.168.111.2/"
-    ProxyPassReverse "/" "http://192.168.111.2/"
-    ServerName hostname.example.com
-</VirtualHost>
-```
-
 see [Reverse Proxy Guide](https://httpd.apache.org/docs/2.4/en/howto/reverse_proxy.html)
+
+
+
+* We used `*.localhost` domains to avoid dealing with DNS and updating configuration files.
+* This is NOT possible to prevent access to containers from host. The containers are using interfaces on the host machine. **BUT** the browsers have a same-origin-policy which prevent cross-origin-resource-sharing, i.e. fetch data from another source than the current page's one
+* Docker networks have their own dns resolution, we do not need to use static ip adresses and can use hostnames instead. This allow us to have 2 or more proxypass for the same host using `aliases`  to have multiple domains for each host.
+* The apache static configuration will have to be updated manually each time a network change is made (change of ip/hostname, adding/removing service/replicas, ...)
 
 
 

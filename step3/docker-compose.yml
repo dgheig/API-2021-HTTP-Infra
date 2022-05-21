@@ -6,6 +6,7 @@ services:
     ports:
       - "80:80"
     networks:
+      default:
       internal:
     volumes:
       - ./apache_cache:/var/cache/apache/
@@ -26,6 +27,8 @@ services:
     image: res-express-app
     networks:
       internal:
+        aliases:
+        - students-api
 
   wordpress-db:
     image: mysql:5.7
@@ -59,4 +62,6 @@ volumes:
   wordpress_data: {}
 
 networks:
+  default:
   internal:
+    internal: true

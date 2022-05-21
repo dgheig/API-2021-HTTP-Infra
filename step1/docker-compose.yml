@@ -3,7 +3,7 @@ services:
 
   apache2:
     build:
-      context: ./step1  # Required, the folder we want to launch the command from if we did it using docker
+      context: .  # Required, the folder we want to launch the command from if we did it using docker
       dockerfile: ./apache2.Dockerfile
       labels:
       - "RES=HTTP"
