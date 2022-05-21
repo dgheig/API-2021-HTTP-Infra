@@ -1,0 +1,69 @@
+version: '3.5'
+services:
+  traefik:
+    image: "traefik:v2.6"
+    container_name: "traefik"
+    command:
+      #- "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--log.level=INFO"
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
+  static:
+    build:
+      context: ./apache
+      dockerfile: ./apache2.Dockerfile
+      labels:
+      - "RES=HTTP"
+    image: res-http-apache2-static:step4
+    networks:
+      default:
+    labels:
+      - "RES=HTTP"
+      - "traefik.enable=true"
+      - "traefik.http.routers.static.rule=Host(`res-http.localhost`)"
+      - "traefik.http.routers.static.entrypoints=web"
+
+  # flask:
+  #   build:
+  #     context: ./flask
+  #     dockerfile: ./flask.Dockerfile
+  #     labels:
+  #     - "RES=HTTP"
+  #   image: res-flask-app
+  #   networks:
+  #     default:
+  #   labels:
+  #   - "RES=HTTP"
+  #   - "traefik.enable=true"
+  #   - "traefik.http.routers.flask.rule=Host(`res-http.localhost`) && Path(`/flask`)"
+  #   - "traefik.http.routers.flask.entrypoints=web"
+  #   - traefik.http.services.flask-service.loadbalancer.server.port=5000
+
+  express:
+    build:
+      context: ./express
+      dockerfile: ./express.Dockerfile
+      labels:
+      - "RES=HTTP"
+    image: res-express-app
+    networks:
+      default:
+        aliases:
+        - students-api
+    labels:
+    - "RES=HTTP"
+    - "traefik.enable=true"
+    - "traefik.http.routers.express.rule=Host(`res-http.localhost`) && Path(`/api/students`)"
+    - "traefik.http.middlewares.students-stripprefix.stripprefix.prefixes=/api/students"
+    - "traefik.http.routers.express.entrypoints=web"
+    - "traefik.http.services.express-service.loadbalancer.server.port=8080"
+    # https://www.reddit.com/r/Traefik/comments/lss1ie/cannot_make_stripprefix_work_help/
+    - "traefik.http.routers.express.middlewares=students-stripprefix"
