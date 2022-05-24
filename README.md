@@ -121,15 +121,25 @@ see [Reverse Proxy Guide](https://httpd.apache.org/docs/2.4/en/howto/reverse_pro
 
 ### Load balancing: multiple server nodes (0.5 pt)
 
+Automatique avec la configuration correct de traefik
+
+![round-robin](img/round-robin.png)
+
 
 
 ### Load balancing: round-robin vs sticky sessions (0.5 pt)
 
-
+TODO: activer le sticky session
 
 ### Dynamic cluster management (0.5 pt)
 
+```bash
+docker-compose scale static=3
+```
 
+![dynamic_cluster_management](img/dynamic_cluster_management.png)
+
+TODO: Expliquer
 
 ### Management UI (0.5 pt)
 
