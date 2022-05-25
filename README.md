@@ -95,7 +95,7 @@ We made 3 versions:
     2. A second image is created from the previous one and the sources. The binary is built inside of this image
     3. This final image will simply copy from the second one the compiled binary.
 
-    This method is standalone and perfectly reproducible, but will take longueur since it won't be able to remember cache information between the builds
+    This method is standalone and perfectly reproducible, but will take longer since it won't be able to remember cache information between the builds
 
 
 
