@@ -43,6 +43,8 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.static.rule=Host(`res-http.localhost`)"
       - "traefik.http.routers.static.entrypoints=web"
+      - "traefik.http.services.static-service.loadbalancer.sticky.cookie=true"
+      - "traefik.http.services.static-service.loadBalancer.sticky.cookie.name=static_app_students"
 
   # flask:
   #   build:
@@ -78,6 +80,8 @@ services:
     - "traefik.http.middlewares.students-stripprefix.stripprefix.prefixes=/api/students"
     - "traefik.http.routers.express.entrypoints=web"
     - "traefik.http.services.express-service.loadbalancer.server.port=8080"
+    - "traefik.http.services.express-service.loadbalancer.sticky.cookie=true"
+    - "traefik.http.services.express-service.loadBalancer.sticky.cookie.name=express_app_students"
     # https://www.reddit.com/r/Traefik/comments/lss1ie/cannot_make_stripprefix_work_help/
     - "traefik.http.routers.express.middlewares=students-stripprefix"
 

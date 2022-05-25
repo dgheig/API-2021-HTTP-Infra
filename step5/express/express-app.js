@@ -35,6 +35,7 @@ function generateStudents() {
 // App
 const app = express();
 app.get('/', (req, res) => {
+  console.log("Requested")
   res.send(generateStudents());
 });
 app.get('/', (req, res) => {
