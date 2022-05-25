@@ -13,7 +13,7 @@ function generateStudents() {
     min: 0,
     max: 10,
   });
-  console.log(numberOfStudents);
+  // console.log(numberOfStudents);
   var students = [];
   for(let i = 0; i < numberOfStudents; ++i) {
     var gender = chance.gender();
@@ -28,17 +28,15 @@ function generateStudents() {
       birthday: chance.birthday({year: birthyear})
     });
   }
-  console.log(students);
+  // console.log(students);
   return students;
 };
 
 // App
 const app = express();
 app.get('/', (req, res) => {
+  console.log("Requested")
   res.send(generateStudents());
-});
-app.get('/', (req, res) => {
-  res.send('Hello World');
 });
 
 app.listen(PORT, HOST);
