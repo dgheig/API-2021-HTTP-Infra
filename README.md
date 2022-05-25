@@ -110,6 +110,33 @@ see [Reverse Proxy Guide](https://httpd.apache.org/docs/2.4/en/howto/reverse_pro
 
 #### Remarks
 
+* There are 2 configurations (file `vhosts1.conf`):
+
+  * The one required: it can be accessed using `res-http.localhost`. The route `/` provides the static website, and `/api/students` provides the data.
+    There are also `/api/express` which is an "alias" for `/api/students`, and `/api/flask` which is another server having the same api but made using Flask framework.
+    We can change 
+
+    ```ini
+    ProxyPass        "/api/students" "http://students-api:8080/"
+    ProxyPassReverse "/api/students" "http://students-api:8080/"
+    ```
+
+    to
+
+    ```ini
+    ProxyPass        "/api/students" "http://flask-app:5000/"
+    ProxyPassReverse "/api/students" "http://flask-app:5000/"
+    ```
+
+    And it would still work
+  * The second configuration (file `vhosts2.conf`): It provide direct access to the services
+
+    * `static-apache2.localhost`: Another way to access the static apache server
+    * `crow-app.localhost`: An access to a server made with CrowCpp
+    * `flask-app.localhost`:  An access to a server made with Flask (the one available at `res-http.localhost/api/flask`)
+    * `express-app.localhost`:  An access to a server made with express (the one available at `res-http.localhost/api/student`)
+    * `wordpress.localhost`: A wordpress server as a mere example for the reverse proxy
+
 * This step re-use the images generated on step 1 and 2. They must have been built beforehand.
 * We used `*.localhost` domains to avoid dealing with DNS and updating configuration files.
 * This is NOT possible to prevent access to containers from host by just using Docker. The containers are using interfaces on the host machine. **BUT** the browsers have a same-origin-policy which prevent cross-origin-resource-sharing, i.e. fetch data from another source than the current page's one.
