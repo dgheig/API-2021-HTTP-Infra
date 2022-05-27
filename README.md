@@ -24,7 +24,20 @@
 
 
 
-Nb: Provide a way to see the result of each step individually (?)
+### Preamble
+
+* Each step have its own folder.
+
+* In each folder you will find a `docker-compose.yml` file: You can simply run the following command from each step folder
+
+  ```bash
+  docker-compose up
+  ```
+
+* The steps 3 and 4 re-use some images from steps 1 and 2: you need to build these images before doing `docker-compose up`.
+  This can be done by running `docker-compose build` in `step1/` and `step2/` folders
+
+
 
 ## Required Steps (max grade: 4.5)
 
@@ -36,6 +49,10 @@ Nb: Provide a way to see the result of each step individually (?)
 * Create a apache2 docker image with custom content
 
 
+
+#### Remarks
+
+The repository is available [here](https://github.com/dgheig/API-2021-HTTP-Infra)
 
 [startbootstrap.com](https://startbootstrap.com/): some bootstrap templates.
 
@@ -55,6 +72,8 @@ docker run -p "8080:80" res-http-apache2-static
 docker-compose up # add -d option to run as a daemon (i.e in the background)
 ```
 
+Nb: We will keep using `docker-compose` on the next steps to deploy the services
+
 
 
 ### Step 2: Dynamic HTTP server with express.js
@@ -66,9 +85,11 @@ docker-compose up # add -d option to run as a daemon (i.e in the background)
 
 
 
+#### Remarks
+
 We made 3 versions:
 
-* ExpressJs
+* [Express](https://expressjs.com/fr/)
 
 * [Flask](https://flask.palletsprojects.com/en/2.1.x/)
 
@@ -77,6 +98,7 @@ We made 3 versions:
   * Using a docker container as a build environement:
 
     ```bash
+    # The following instructions are run from the cpp/ folder
     # Build the build environment image
     docker build -f build.Dockerfile -t res-crow-build .
     # Mount the sources and build. The binary will then be available in the sources' folder
@@ -84,18 +106,18 @@ We made 3 versions:
     # Create the final image by copying the binary inside of it
     docker build --no-cache -f crow.Dockerfile -t res-crow .
     ```
-
+  
     (see `step2/cpp/build.sh` script)
-
+  
     This method is better when building with local cache (e.g. node) since we won't have to pull then everytime.
-
+  
   * Using Docker [multi-step build](https://docs.docker.com/develop/develop-images/multistage-build/):
-
+  
     1. One image is created with the required package to build
     2. A second image is created from the previous one and the sources. The binary is built inside of this image
     3. This final image will simply copy from the second one the compiled binary.
-
-    This method is standalone and perfectly reproducible, but will take longer since it won't be able to remember cache information between the builds
+  
+    This method is standalone and perfectly reproducible, but will take longer since it won't be able to remember cache information between the builds. It is easier to use with docker-compose since we don't have to do extra previous steps before running `docker-compose up`
 
 
 
@@ -104,7 +126,7 @@ We made 3 versions:
 
 #### Goals
 
-see [Reverse Proxy Guide](https://httpd.apache.org/docs/2.4/en/howto/reverse_proxy.html)
+Setup the reverse proxy: see [Reverse Proxy Guide](https://httpd.apache.org/docs/2.4/en/howto/reverse_proxy.html)
 
 
 
@@ -129,7 +151,7 @@ see [Reverse Proxy Guide](https://httpd.apache.org/docs/2.4/en/howto/reverse_pro
     ```
 
     And it would still work
-  * The second configuration (file `vhosts2.conf`): It provide direct access to the services
+  * The second configuration (file `vhosts2.conf`): It provides direct access to the services
 
     * `static-apache2.localhost`: Another way to access the static apache server
     * `crow-app.localhost`: An access to a server made with CrowCpp
@@ -137,11 +159,11 @@ see [Reverse Proxy Guide](https://httpd.apache.org/docs/2.4/en/howto/reverse_pro
     * `express-app.localhost`:  An access to a server made with express (the one available at `res-http.localhost/api/student`)
     * `wordpress.localhost`: A wordpress server as a mere example for the reverse proxy
 
-* This step re-use the images generated on step 1 and 2. They must have been built beforehand.
+* This step re-uses the images generated on step 1 and 2. They must have been built beforehand.
 * We used `*.localhost` domains to avoid dealing with DNS and updating configuration files.
-* This is NOT possible to prevent access to containers from host by just using Docker. The containers are using interfaces on the host machine. **BUT** the browsers have a same-origin-policy which prevent cross-origin-resource-sharing, i.e. fetch data from another source than the current page's one.
-  But, on Windows and Mac using Docker-Desktop, docker is run in a virtual machine. In this case, the services are not available from the host directly without using a port forward.
-* Docker networks have their own dns resolution, we do not need to use static ip adresses and can use hostnames instead. This allow us to have 2 or more proxypass for the same host using `aliases`  to have multiple domains for each host.
+* It is NOT possible to prevent access to containers from host by just using Docker. The containers are using interfaces on the host machine. **BUT** the browsers have a same-origin-policy which prevents cross-origin-resource-sharing, i.e. fetching data from another source than the current page's one.
+  But, on Windows and Mac using Docker-Desktop, docker is run in a virtual machine. In this case, the services are not available from the host directly without using  port forwarding.
+* Docker networks have their own dns resolution, we do not need to use static ip adresses and can use hostnames instead. This allows us to have 2 or more proxypasses for the same host using `aliases`  to have multiple domains for each host.
 * The apache static configuration will have to be updated manually each time a network change is made (change of ip/hostname, adding/removing service/replicas, ...)
 
 
